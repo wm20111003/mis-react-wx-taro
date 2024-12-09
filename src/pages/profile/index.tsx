@@ -1,29 +1,60 @@
-import React from 'react';
+import Taro from '@tarojs/taro';
+import React, { useState } from 'react';
 import { Avatar, Button, Cell, Divider, Grid } from '@nutui/nutui-react-taro';
 import { Gift, Category, User } from '@nutui/icons-react-taro'
-import '@nutui/nutui-react-taro/dist/style.css';
+import { useLoad, useDidShow } from '@tarojs/taro';
+import { local } from '../../utils/storage';
 
 const MemberCenter = () => {
+  const [isLogin, setLogined] = useState(false)
+  const [user, setUser] = useState({} as any)
+
+  const toLogin = () => {
+    Taro.navigateTo({
+      url: '/pages/login/index',
+    });
+  }
+
+  useLoad((options) => {
+    console.log('页面加载时的参数:', options);
+  });
+
+  useDidShow(() => {
+    const token = local.getVal('token')
+    const userinfo = local.getVal('userinfo')
+    if (token) {
+      setLogined(true)
+      setUser(JSON.parse(userinfo))
+    }
+  })
   return (
     <div style={{ backgroundColor: '#f5f5f5', minHeight: '100vh', paddingBottom: '50px' }}>
-      {/* 顶部会员信息 */}
-      <div style={{ backgroundColor: '#fff', padding: '20px', textAlign: 'center' }}>
-        <Avatar
-          size="large"
-          src="https://img.icons8.com/color/96/000000/user.png"
-        />
-        <div style={{ marginTop: '10px', fontSize: '18px', fontWeight: 'bold' }}>
-          张三
+      {
+        isLogin ? 
+        <div style={{ backgroundColor: '#fff', padding: '20px', textAlign: 'center' }}>
+          <Avatar
+            size="large"
+            src="https://img.icons8.com/color/96/000000/user.png"
+          />
+          <div style={{ marginTop: '10px', fontSize: '18px', fontWeight: 'bold' }}>
+            {user.sLoginName}
+          </div>
+          <div style={{ color: '#999', fontSize: '14px' }}>会员编号：{user.sLN}</div>
+        </div> :
+        <div style={{ backgroundColor: '#fff', padding: '20px', textAlign: 'center' }}>
+          <User width={30} height={30} />
+          <div>
+            <Button
+              type="primary"
+              size="small"
+              style={{ marginTop: '15px', borderRadius: '20px' }}
+              onClick={toLogin}
+            >
+              去登录
+            </Button>
+          </div>
         </div>
-        <div style={{ color: '#999', fontSize: '14px' }}>会员编号：123456789</div>
-        <Button
-          type="primary"
-          size="small"
-          style={{ marginTop: '15px', borderRadius: '20px' }}
-        >
-          升级会员
-        </Button>
-      </div>
+      }
 
       {/* 会员权益 */}
       <div style={{ backgroundColor: '#fff', marginTop: '10px', padding: '15px' }}>

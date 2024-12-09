@@ -1,7 +1,6 @@
 import React from 'react';
 import { Cell, Grid, Divider, Button } from '@nutui/nutui-react-taro';
 import { Gift, Category, User, Setting, Cart, Calendar } from '@nutui/icons-react-taro'
-import '@nutui/nutui-react-taro/dist/style.css';
 
 const MisHome = () => {
   return (
